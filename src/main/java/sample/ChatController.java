@@ -1,9 +1,10 @@
 package sample;
 
+import kbjlbl.Message;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
 
 /*
  * Chat Controller listens for chat topic and responds with a message.
