@@ -1,6 +1,6 @@
-package com.game.util;
+package com.game.util.common;
 
-import com.game.util.common.EventType;
+
 import com.game.util.snake.Coordinate;
 import com.game.util.snake.enums.Direction;
 
@@ -10,47 +10,39 @@ import java.util.List;
 /*
  ******************************
  # Created by Tirla Ovidiu #
- # 16.02.2018 #
+ # 23.02.2018 #
  ******************************
 */
-public class OutputMessage {
+public class SnakeMessage {
     private String from;
     private String message;
     private String topic;
-    private EventType eventType;
+    private EventType event;
     private List<Coordinate> walls = new ArrayList<>();
     private List<Coordinate> snakeP1 = new ArrayList<>();
     private List<Coordinate> snakeP2 = new ArrayList<>();
     private List<Coordinate> apples = new ArrayList<>();
     private List<Coordinate> obstacles = new ArrayList<>();
 
-    private Direction p1NextDirection;
-    private Direction p2NextDirection;
+    private Coordinate p1NextCoordinate;
+    private Coordinate p2NextCoordinate;
+
     private Direction p1CurrentDirection;
     private Direction p2CurrentDirection;
     private String winner;
 
-    public OutputMessage() {
-    }
-
-    public OutputMessage(String from, String message, String topic) {
+    public SnakeMessage(String from, String message, String topic, EventType event) {
         this.from = from;
         this.message = message;
         this.topic = topic;
+        this.event = event;
     }
 
-    public OutputMessage(String from, String message, String topic, EventType eventType) {
+    public SnakeMessage(String from, String message, String topic, EventType event, List<Coordinate> snakeP1, List<Coordinate> snakeP2, List<Coordinate> walls, List<Coordinate> apples, List<Coordinate> obstacles, Direction p1CurrentDirection, Direction p2CurrentDirection) {
         this.from = from;
         this.message = message;
         this.topic = topic;
-        this.eventType = eventType;
-    }
-
-    public OutputMessage(String from, String message, String topic, EventType eventType, List<Coordinate> snakeP1, List<Coordinate> snakeP2, List<Coordinate> walls, List<Coordinate> apples, List<Coordinate> obstacles, Direction p1CurrentDirection, Direction p2CurrentDirection) {
-        this.from = from;
-        this.message = message;
-        this.topic = topic;
-        this.eventType = eventType;
+        this.event = event;
         this.snakeP1 = snakeP1;
         this.snakeP2 = snakeP2;
         this.walls = walls;
@@ -60,22 +52,21 @@ public class OutputMessage {
         this.p2CurrentDirection = p2CurrentDirection;
     }
 
-    public OutputMessage(String from, String message, String topic, Direction p1NextDirection, Direction p2NextDirection) {
+    public SnakeMessage(String from, String message, String topic, Coordinate p1NextCoordinate, Coordinate p2NextCoordinate) {
         this.from = from;
         this.message = message;
         this.topic = topic;
-        this.p1NextDirection = p1NextDirection;
-        this.p2NextDirection = p2NextDirection;
+        this.p1NextCoordinate = p1NextCoordinate;
+        this.p2NextCoordinate = p2NextCoordinate;
     }
 
-    public OutputMessage(String from, String message, String topic, String winner, EventType eventType) {
+    public SnakeMessage(String from, String message, String topic, String winner, EventType event) {
         this.from = from;
         this.message = message;
         this.topic = topic;
         this.winner = winner;
-        this.eventType = eventType;
+        this.event = event;
     }
-
 
     public void setFrom(String from) {
         this.from = from;
@@ -89,8 +80,8 @@ public class OutputMessage {
         this.topic = topic;
     }
 
-    public void setEventType(EventType eventType) {
-        this.eventType = eventType;
+    public void setEvent(EventType event) {
+        this.event = event;
     }
 
     public void setWalls(List<Coordinate> walls) {
@@ -113,13 +104,6 @@ public class OutputMessage {
         this.obstacles = obstacles;
     }
 
-    public void setP1NextDirection(Direction p1NextDirection) {
-        this.p1NextDirection = p1NextDirection;
-    }
-
-    public void setP2NextDirection(Direction p2NextDirection) {
-        this.p2NextDirection = p2NextDirection;
-    }
 
     public void setP1CurrentDirection(Direction p1CurrentDirection) {
         this.p1CurrentDirection = p1CurrentDirection;
@@ -145,8 +129,8 @@ public class OutputMessage {
         return topic;
     }
 
-    public EventType getEventType() {
-        return eventType;
+    public EventType getEvent() {
+        return event;
     }
 
     public List<Coordinate> getWalls() {
@@ -169,13 +153,6 @@ public class OutputMessage {
         return obstacles;
     }
 
-    public Direction getP1NextDirection() {
-        return p1NextDirection;
-    }
-
-    public Direction getP2NextDirection() {
-        return p2NextDirection;
-    }
 
     public Direction getP1CurrentDirection() {
         return p1CurrentDirection;
@@ -187,5 +164,21 @@ public class OutputMessage {
 
     public String getWinner() {
         return winner;
+    }
+
+    public Coordinate getP1NextCoordinate() {
+        return p1NextCoordinate;
+    }
+
+    public void setP1NextCoordinate(Coordinate p1NextCoordinate) {
+        this.p1NextCoordinate = p1NextCoordinate;
+    }
+
+    public Coordinate getP2NextCoordinate() {
+        return p2NextCoordinate;
+    }
+
+    public void setP2NextCoordinate(Coordinate p2NextCoordinate) {
+        this.p2NextCoordinate = p2NextCoordinate;
     }
 }
