@@ -12,18 +12,13 @@ import com.game.util.snake.enums.GameState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.event.EventListener;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.socket.messaging.SessionConnectedEvent;
-import org.springframework.web.socket.messaging.SessionDisconnectEvent;
-import org.springframework.web.socket.messaging.SessionSubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +36,11 @@ import java.util.concurrent.ConcurrentHashMap;
 @EnableScheduling
 public class GameController {
     private static final String SERVER = "SERVER";
-    private static final Logger logger = LoggerFactory.getLogger(GameController.class);
+
+    private static final Logger log = LoggerFactory.getLogger(GameController.class);
+
+    private static final String QUEUE = "[QUEUE]";
+    private static final String GAMES = "[GAMES]";
 
     private static final String snakeGameDestination = "/topic/snake/";
     private static final String snakeQueueDestination = "/topic/queue/";
@@ -64,7 +63,7 @@ public class GameController {
     @MessageMapping("/snake/queue/{username}")
     public void sendLobby(@DestinationVariable("username") String username, ClientMessage message, SimpMessageHeaderAccessor headerAccessor) {
         String sessionId = headerAccessor.getSessionId();
-        System.out.println("[Queue] " + sessionId);
+        log.debug(QUEUE + sessionId);
         if (availableLobbies.size() > 0) {
             template.convertAndSend(snakeQueueDestination + username, new LobbyMessage(SERVER, "Join lobby", availableLobbies.get(0), EventType.GAME_FOUND));
         } else {
@@ -143,7 +142,6 @@ public class GameController {
                         snake.updatePlayer2Direction(message.getNextMove());
                     }
                     if (snake.getCurrentGameState() == GameState.Running) {
-
                     } else {
                         String winner;
                         if (snake.getWinner())
@@ -163,7 +161,7 @@ public class GameController {
         }
     }
 
-    @Scheduled(fixedDelay = 500)
+    @Scheduled(fixedDelay = 300)
     public synchronized void broadcastUpdates() {
         if (runningGames.size() > 0) {
             for (String lobbyId : runningGames) {
@@ -185,7 +183,7 @@ public class GameController {
                     lobby.setPlayer1Status(StatusType.DISCONNECTED);
                     lobby.setPlayer2Status(StatusType.DISCONNECTED);
                 } else {
-                    template.convertAndSend(snakeGameDestination + lobby.getLobbyId(), new SnakeMessage(SERVER, "UPDATE", lobby.getLobbyId(), snake.getP1NextCoordinate(), snake.getP2NextCoordinate()));
+                    template.convertAndSend(snakeGameDestination + lobby.getLobbyId(), new SnakeMessage(SERVER, "UPDATE", lobby.getLobbyId(), snake.getP1NextCoordinate(), snake.getGrowP1(), snake.getP2NextCoordinate(), snake.getGrowP2(), snake.getApples()));
 
 //                    Date date = new Date();
 //                    System.out.println(date.toString() + " UPDATE SENT " + lobby.getLobbyId());
@@ -196,32 +194,7 @@ public class GameController {
         }
     }
 
-    @EventListener
-    public void onSocketConnected(SessionConnectedEvent event) {
-//        StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
-//        System.out.println("[Connected] " + sha.getSessionId() + " " + event.getUser());
-//        System.out.println("[Connected] " + event.getMessage().getHeaders());
-//        System.out.println("[Connected] " + Arrays.toString(event.getMessage().getPayload()));
-//        template.convertAndSend(sha.getSessionId(), "test");
-//        template.convertAndSend(sha.getDestination(), new SnakeMessage(SERVER, "WAIT FOR PLAYERS", "lobby1", EventType.HELLO_EVENT));
-    }
-
-    @EventListener
-    public void onSocketDisconnected(SessionDisconnectEvent event) {
-        StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
-//        System.out.println("[Disonnected] " + sha.getSessionId());
-        removeIfWasInGame(sha.getSessionId());
-    }
-
-    @EventListener
-    public void onTopicSubscribe(SessionSubscribeEvent event) {
-        StompHeaderAccessor sha = StompHeaderAccessor.wrap(event.getMessage());
-//        System.out.println("[Subscribe] " + sha.getSessionId() + " " + event.getUser());
-//        System.out.println("[Subscribe] " + event.getUser());
-//        System.out.println("[Subscribe] " + event.getMessage());
-    }
-
-    private synchronized void removeIfWasInGame(String sessionId) {
+    public synchronized void removeIfWasInGame(String sessionId) {
         for (String lobbyId : lobbyMap.keySet()) {
             Lobby lobby = lobbyMap.get(lobbyId);
             if (lobby.getPlayer1SessionId().equals(sessionId) || lobby.getPlayer2SessionId().equals(sessionId)) {
@@ -244,5 +217,9 @@ public class GameController {
 
     private synchronized void addGame(Lobby lobby) {
         runningGames.add(lobby.getLobbyId());
+    }
+
+    public String getRunningGamesCounter() {
+        return String.valueOf(runningGames.size());
     }
 }

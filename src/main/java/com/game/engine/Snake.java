@@ -31,6 +31,8 @@ public class Snake {
 
     private Direction p1CurrentDirection;
     private Direction p2CurrentDirection;
+    private Boolean growP1;
+    private Boolean growP2;
 
     private GameState currentGameState = GameState.Running;
 
@@ -49,6 +51,9 @@ public class Snake {
         AddWalls();
         AddObstacles();
         AddApples();
+
+        growP1 = false;
+        growP2 = false;
     }
 
     public void updatePlayer1Direction(Direction p1NextDirection) {
@@ -64,6 +69,8 @@ public class Snake {
     }
 
     public void updateCheck() {
+        growP1 = false;
+        growP2 = false;
         switch (p1CurrentDirection) {
             case WEST:
                 UpdateSnake(-1, 0, snakeP1);
@@ -103,6 +110,25 @@ public class Snake {
         if (currentGameState == GameState.Lost) {
             winner = true;
         }
+
+        for (Coordinate apple : apples) {
+            if (snakeP1.get(0).equals(apple)) {
+                growP1 = true;
+                apples.remove(apple);
+                break;
+            }
+        }
+        for (Coordinate apple : apples) {
+            if (snakeP2.get(0).equals(apple)) {
+                growP2 = true;
+                apples.remove(apple);
+                break;
+            }
+        }
+
+        if (growP1 || growP2)
+            AddApples();
+
         p1NextCoordinate = snakeP1.get(0);
         p2NextCoordinate = snakeP2.get(0);
     }
@@ -161,6 +187,13 @@ public class Snake {
             boolean collision = false;
 
             for (Coordinate s : snakeP1) {
+                if (s.equals(coordinate)) {
+                    collision = true;
+                    break;
+                }
+            }
+
+            for (Coordinate s : snakeP2) {
                 if (s.equals(coordinate)) {
                     collision = true;
                     break;
@@ -268,5 +301,13 @@ public class Snake {
 
     public GameState getCurrentGameState() {
         return currentGameState;
+    }
+
+    public Boolean getGrowP1() {
+        return growP1;
+    }
+
+    public Boolean getGrowP2() {
+        return growP2;
     }
 }

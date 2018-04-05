@@ -29,6 +29,8 @@ public class SnakeMessage {
 
     private Direction p1CurrentDirection;
     private Direction p2CurrentDirection;
+    private Boolean growP1;
+    private Boolean growP2;
     private String winner;
 
     public SnakeMessage(String from, String message, String topic, EventType event) {
@@ -52,12 +54,15 @@ public class SnakeMessage {
         this.p2CurrentDirection = p2CurrentDirection;
     }
 
-    public SnakeMessage(String from, String message, String topic, Coordinate p1NextCoordinate, Coordinate p2NextCoordinate) {
+    public SnakeMessage(String from, String message, String topic, Coordinate p1NextCoordinate, Boolean growP1, Coordinate p2NextCoordinate, Boolean growP2, List<Coordinate> apples) {
         this.from = from;
         this.message = message;
         this.topic = topic;
         this.p1NextCoordinate = p1NextCoordinate;
         this.p2NextCoordinate = p2NextCoordinate;
+        this.growP1 = growP1;
+        this.growP2 = growP2;
+        this.apples = apples;
     }
 
     public SnakeMessage(String from, String message, String topic, String winner, EventType event) {
@@ -68,102 +73,76 @@ public class SnakeMessage {
         this.event = event;
     }
 
-    public void setFrom(String from) {
-        this.from = from;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-
-    public void setEvent(EventType event) {
-        this.event = event;
-    }
-
-    public void setWalls(List<Coordinate> walls) {
-        this.walls = walls;
-    }
-
-    public void setSnakeP1(List<Coordinate> snakeP1) {
-        this.snakeP1 = snakeP1;
-    }
-
-    public void setSnakeP2(List<Coordinate> snakeP2) {
-        this.snakeP2 = snakeP2;
-    }
-
-    public void setApples(List<Coordinate> apples) {
-        this.apples = apples;
-    }
-
-    public void setObstacles(List<Coordinate> obstacles) {
-        this.obstacles = obstacles;
-    }
-
-
-    public void setP1CurrentDirection(Direction p1CurrentDirection) {
-        this.p1CurrentDirection = p1CurrentDirection;
-    }
-
-    public void setP2CurrentDirection(Direction p2CurrentDirection) {
-        this.p2CurrentDirection = p2CurrentDirection;
-    }
-
-    public void setWinner(String winner) {
-        this.winner = winner;
-    }
-
     public String getFrom() {
         return from;
+    }
+
+    public void setFrom(String from) {
+        this.from = from;
     }
 
     public String getMessage() {
         return message;
     }
 
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
     public String getTopic() {
         return topic;
+    }
+
+    public void setTopic(String topic) {
+        this.topic = topic;
     }
 
     public EventType getEvent() {
         return event;
     }
 
+    public void setEvent(EventType event) {
+        this.event = event;
+    }
+
     public List<Coordinate> getWalls() {
         return walls;
+    }
+
+    public void setWalls(List<Coordinate> walls) {
+        this.walls = walls;
     }
 
     public List<Coordinate> getSnakeP1() {
         return snakeP1;
     }
 
+    public void setSnakeP1(List<Coordinate> snakeP1) {
+        this.snakeP1 = snakeP1;
+    }
+
     public List<Coordinate> getSnakeP2() {
         return snakeP2;
+    }
+
+    public void setSnakeP2(List<Coordinate> snakeP2) {
+        this.snakeP2 = snakeP2;
     }
 
     public List<Coordinate> getApples() {
         return apples;
     }
 
+    public void setApples(List<Coordinate> apples) {
+        this.apples = apples;
+    }
+
     public List<Coordinate> getObstacles() {
         return obstacles;
     }
 
-
-    public Direction getP1CurrentDirection() {
-        return p1CurrentDirection;
-    }
-
-    public Direction getP2CurrentDirection() {
-        return p2CurrentDirection;
-    }
-
-    public String getWinner() {
-        return winner;
+    public void setObstacles(List<Coordinate> obstacles) {
+        this.obstacles = obstacles;
     }
 
     public Coordinate getP1NextCoordinate() {
@@ -180,5 +159,45 @@ public class SnakeMessage {
 
     public void setP2NextCoordinate(Coordinate p2NextCoordinate) {
         this.p2NextCoordinate = p2NextCoordinate;
+    }
+
+    public Direction getP1CurrentDirection() {
+        return p1CurrentDirection;
+    }
+
+    public void setP1CurrentDirection(Direction p1CurrentDirection) {
+        this.p1CurrentDirection = p1CurrentDirection;
+    }
+
+    public Direction getP2CurrentDirection() {
+        return p2CurrentDirection;
+    }
+
+    public void setP2CurrentDirection(Direction p2CurrentDirection) {
+        this.p2CurrentDirection = p2CurrentDirection;
+    }
+
+    public Boolean getGrowP1() {
+        return growP1;
+    }
+
+    public void setGrowP1(Boolean growP1) {
+        this.growP1 = growP1;
+    }
+
+    public Boolean getGrowP2() {
+        return growP2;
+    }
+
+    public void setGrowP2(Boolean growP2) {
+        this.growP2 = growP2;
+    }
+
+    public String getWinner() {
+        return winner;
+    }
+
+    public void setWinner(String winner) {
+        this.winner = winner;
     }
 }
