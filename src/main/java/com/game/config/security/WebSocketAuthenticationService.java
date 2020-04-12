@@ -1,8 +1,9 @@
-package com.game.service;
+package com.game.config.security;
 
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +17,7 @@ import java.util.Collections;
 */
 @Component
 public class WebSocketAuthenticationService {
-    public UsernamePasswordAuthenticationToken getAuthenticatedOrFail(String username, String password) {
+    UsernamePasswordAuthenticationToken getAuthenticatedOrFail(final String username, final String password) throws AuthenticationException {
         if ((username == null) || username.trim().length() == 0) {
             throw new AuthenticationCredentialsNotFoundException("Username was null or empty.");
         }
@@ -25,6 +26,7 @@ public class WebSocketAuthenticationService {
         }
 
         if (!checkUser(username, password)) {
+//            return new UsernamePasswordAuthenticationToken(username, null, Collections.singleton((GrantedAuthority) () -> "GUEST"));
             throw new BadCredentialsException("Bad credentials for user " + username);
         }
 
